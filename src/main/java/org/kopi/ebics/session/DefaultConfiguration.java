@@ -64,7 +64,7 @@ public class DefaultConfiguration implements Configuration {
    * The root directory will be user.home/ebics/client
    */
   public DefaultConfiguration() {
-    this(System.getProperty("user.home") + File.separator + "ebics" + File.separator + "client");
+    this(System.getProperty("user.home") + File.separator + ".ebics" + File.separator + "client");
   }
 
   /**

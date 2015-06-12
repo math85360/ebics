@@ -160,6 +160,25 @@ public class IOUtils {
       throw new EbicsException(e.getMessage());
     }
   }
+  
+  /**
+   * Returns the content of a stream as byte array.
+   * @param input stream
+   * @return the byte array content
+   * @throws EbicsException
+   */
+  public static byte[] getInputContent(InputStream input) throws EbicsException {
+    try {
+      byte[]				content;
+
+      content = new byte[input.available()];
+      input.read(content);
+      input.close();
+      return content;
+    } catch (IOException e) {
+      throw new EbicsException(e.getMessage());
+    }
+  }
 
   /**
    * Returns the content of a <code>ContentFactory</code> as a byte array

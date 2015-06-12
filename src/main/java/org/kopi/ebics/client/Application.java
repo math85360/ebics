@@ -20,9 +20,12 @@
 package org.kopi.ebics.client;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -39,7 +42,6 @@ import org.kopi.ebics.interfaces.InitLetter;
 import org.kopi.ebics.interfaces.PasswordCallback;
 import org.kopi.ebics.io.IOUtils;
 import org.kopi.ebics.security.UserPasswordHandler;
-
 import org.kopi.ebics.messages.Messages;
 import org.kopi.ebics.session.DefaultConfiguration;
 import org.kopi.ebics.session.EbicsSession;
@@ -487,7 +489,7 @@ public class Application {
 	 * @param product
 	 *            the application product.
 	 */
-	public void sendFile(String path, String format, Boolean isTest,
+	public void sendFile(InputStream input, String format, Boolean isTest,
 			String userId, Product product) {
 		FileTransfer transferManager;
 		EbicsSession session;
@@ -504,20 +506,20 @@ public class Application {
 				configuration.getTransferTraceDirectory(users.get(userId)));
 
 		try {
-			transferManager.sendFile(IOUtils.getFileContent(path),
+			transferManager.sendFile(IOUtils.getInputContent(input),
 					OrderType.FUL);
 		} catch (IOException e) {
 			configuration.getLogger().error(
 					Messages.getString("upload.file.error",
-							Constants.APPLICATION_BUNDLE_NAME, path), e);
+							Constants.APPLICATION_BUNDLE_NAME, "input"), e);
 		} catch (EbicsException e) {
 			configuration.getLogger().error(
 					Messages.getString("upload.file.error",
-							Constants.APPLICATION_BUNDLE_NAME, path), e);
+							Constants.APPLICATION_BUNDLE_NAME, "input"), e);
 		}
 	}
 
-	public void fetchFile(String path, String format, String userId,
+	public void fetchFile(OutputStream output, String format, String userId,
 			Product product, OrderType orderType, boolean isTest, Date start,
 			Date end) {
 		FileTransfer transferManager;
@@ -536,7 +538,7 @@ public class Application {
 
 		try {
 			transferManager.fetchFile(orderType, start, end,
-					new FileOutputStream(path));
+					output);
 		} catch (IOException e) {
 			configuration.getLogger().error(
 					Messages.getString("download.file.error",
@@ -643,8 +645,8 @@ public class Application {
 		// appli.sendINIRequest(userId, product);
 		// appli.sendHIARequest(userId, product);
 		// appli.sendHPBRequest(userId, product);
-		appli.sendFile(System.getProperty("user.home") + File.separator
-				+ "test.txt","pain.xxx.cfonb160.dct",true, userId, product);
+		appli.sendFile(new FileInputStream(System.getProperty("user.home") + File.separator
+				+ "test.txt"),"pain.xxx.cfonb160.dct",true, userId, product);
 		// for (int i = 0; i < 10000; i++) {
 		// appli.fetchFile(System.getProperty("user.home") + File.separator +
 		// "download.txt",
